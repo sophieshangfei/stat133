@@ -1,0 +1,66 @@
+---
+title: "HW 1 Stat 133 Solutions"
+author: "Sophie Shang"
+date: ""
+output: html_document
+---
+<!-- leave this material as is -->
+Compiled on `r date()`.
+
+```{r include = FALSE}
+library(DataComputing)
+```
+<!-- put your content after this line -->
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+<!-- Don't edit the material above this line -->
+
+```{reval = FALSE}
+library(foreign)
+Accidents <- read.dbf("~/Desktop/FARS2015NationalDBF/accident.dbf")
+```
+
+What is `library(foreign)` doing?
+
+*answ:* 'library()' tells me this function imports a package, which is called foregin. From CRAN, I know that foregin is package that helps me to read files/data stored by SPSS, stata, etc. 
+
+What is `read.dbf()`? 
+
+*answ:* It is a function that reads .dbf file. 
+
+What does `"~/Desktop/FARS2015NationalDBF/accident.dbf"` tell you about the data file and where it's located?
+
+*answ:* Desktop! 
+
+```{r eval = FALSE}
+filename <- "~/Desktop/FARS2015NationalDBF/accident.dbf"
+Accidents <- foreign::read.dbf(filename)
+
+```
+
+What's different about the file name I'm using? Why?
+
+*answ:* This way of reading dbf file tells you to first assign the directory to "filename". Then, use the read.dbf function on filename, which essentially is the directory "~/Desktop/FARS2015NationalDBF/accident.dbf". This dbf file is further named as "accidents". In the first way of naming file and reading the dbf file, there is not a step where you assign your directory to a name. 
+
+I believe the second way of reading the file creates convience when we make reference to that directory again in the future. 
+
+What does Lucas's map tell you?
+
+*answ:* The amount of traffic accidents by state. The denser the red dots, the more traffic accdients happened in that place. 
+
+What does CF1, WEATHER2, REL_ROAD mean?
+
+*answ:* 
+CF1 refers to crash level.
+WEATHER2 refers to weather.
+REL_ROAD refers to trafficway.
+
+There are other data files in the database for example . What's the connection between these tables and the `Accident` table? What is the composite foreign key for `Distract` corresponding to composite primary key of Accidents? How would we be able to see which weather conditions distracted driving accidents tend to occur in? 
+
+*answ:* These tables provide background information on drivers and vechiles in each state. For instance, the vision table tells us the number of drivers who have obscured vision and the reason behind their obscured eyes. In the distract table, it tells us if the driver is distracted and if yes, the things that distracted the drivers. Table for DrImpairment tells us the condition (impairment) at time of crash. 
+
+
+
+

@@ -1,0 +1,91 @@
+---
+title: "Lab 6"
+author: "Sophie Shang"
+date: "2-26-2017"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+---
+<!-- Don't edit in between this line and the one below -->
+```{r include=FALSE}
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+library(dplyr)
+library(tidyr)
+```
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+<!-- Don't edit the material above this line -->
+Question 1:
+```{r}
+head(airquality)
+airquality_narrow<-airquality %>%
+  gather(key = type, value, Ozone, Solar.R, Wind, Temp)
+```
+Question 2:
+Step 1: 
+V1 V2  V3   V4
+a  1 alpha  10
+a  2  beta  20
+Step 2:
+V2 V4
+1 10
+2 20
+Step 3:
+Apple Banana
+V2    1
+V4    10   
+V2    2
+V4    20
+Step 4:
+Apple Apple
+V2     V2
+V4     V4
+V2     V2
+V4     V4
+
+Question 3:
+```{r}
+a <- c(1, 2, 4)
+b <- c(-99, 1, 3)
+c <- c(6, -99, 10)
+data <- data.frame(a, b, c)
+fix_missing_99 <- function(x) {
+  for (i in (1:length(x))){
+    if (x[i] == -99){
+      x[i] <- NA
+    }
+  }
+  return (x)
+}
+
+a <- c(1, 2, 3, -99)
+fix_missing_99(b)
+fix_missing_99(data[,3])
+
+for (i in (1:length(data))){
+  print (fix_missing_99(data[,i]))
+  #data[i]<-fix_missing_99(data[i])
+}
+
+apply(data, MARGIN = c(1,2), FUN = fix_missing_99)
+
+```
+```{r}
+head(diamonds)
+plot <- ggplot(diamonds, aes(x = carat, y = price)) + geom_point(aes(color = cut)) + geom_smooth(method = lm, se = FALSE, col = "blue") + facet_wrap(~cut)
+```
+
+
+
+
+
+
+
+
+
+
+

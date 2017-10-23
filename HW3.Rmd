@@ -1,0 +1,79 @@
+c---
+title: "HW3"
+author: "Sophie Shang"
+date: "2.11.2017"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+---
+<!-- Don't edit in between this line and the one below -->
+```{r include=FALSE}
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+library(dplyr)
+library(tidyr)
+```
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+<!-- Don't edit the material above this line -->
+
+```{r}
+load("~/ScorecardSmall.Rda")
+NPT4_names <-read.csv("NPT4-names.csv")
+head(ScorecardSmall)
+```
+```{r}
+needed_info <- ScorecardSmall %>%
+  select(CONTROL, INSTNM, ADM_RATE,CCSIZSET, AVGFACSAL, TUITFTE,NPT4_PUB, NPT4_PRIV, NPT41_PRIV, NPT41_PUB, NPT43_PUB, NPT43_PRIV, NPT45_PUB, NPT45_PRIV)%>%
+  filter(CONTROL != 3, !CCSIZSET %in% c(1, 6, 7, 8))
+```
+
+```{r}
+needed_info_narrow <- needed_info %>%
+  select(CONTROL, ADM_RATE, NPT41_PUB, NPT43_PUB, NPT45_PUB, NPT41_PRIV, NPT43_PRIV, NPT45_PRIV) %>%
+  gather(key = IncomeLevel, value, NPT41_PUB, NPT43_PUB, NPT45_PUB, NPT41_PRIV, NPT43_PRIV, NPT45_PRIV) %>%
+  na.omit()
+```
+```{r}
+needed_info_narrow <-needed_info_narrow %>%
+  inner_join(NPT4_names, by =c("IncomeLevel" = "long_name"))
+needed_info_narrow
+```
+
+```{r}
+needed_info_narrow$CONTROL[needed_info_narrow$CONTROL == "1"] <- "Public"
+needed_info_narrow$CONTROL[needed_info_narrow$CONTROL == "2"] <- "Private"
+plot <- needed_info_narrow %>%
+  filter(ADM_RATE<1) %>%
+  ggplot(aes(x = ADM_RATE*100, y = value/1000)) + geom_point(col = "blue", alpha = 0.3) + geom_smooth(method = loess, col = "red", alpha = 1) + facet_grid(CONTROL~short_name) +   labs(title = "Score Card", x = "Admission Rate, %", y = "Net cost per yaer, $`000") +
+  theme(plot.title = element_text(size = 20, colour = "black"),  
+        axis.title.x = element_text(size = 10, colour = "black"),  
+        axis.title.y = element_text(size = 10, colour = "black"),
+        axis.text.x = element_text(colour = "black", size = 5),
+        axis.text.y = element_text(colour = "black", size = 5)) + ylim(0, 50)
+plot
+```
+
+
+
+```{r}
+BabyNames %>%
+  group_by(sex) %>%
+  summarize(tot_count = sum(count))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

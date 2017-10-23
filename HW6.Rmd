@@ -1,0 +1,110 @@
+---
+title: "HW6"
+author: "Sophie Shang"
+date: "March-16-2016"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+---
+<!-- Don't edit in between this line and the one below -->
+```{r include=FALSE}
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+library(dplyr)
+library(tidyr)
+library(car)
+```
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+
+```{r}
+download.file(url="http://tiny.cc/dcf/CMS_ProvidersSimple.rds",
+              destfile = "TST.rds")
+DataTable <- readRDS("TST.rds")
+```
+```{r}
+Addresses <- read.csv("http://tiny.cc/dcf/street-addresses.csv")
+Sample <- Addresses %>%
+  sample_n(size = 50)
+Sample
+```
+```{r}
+Matches <- 
+  Sample %>%
+  filter(grepl("PO", address))
+Dont <- 
+  Sample %>%
+  filter( ! grepl("PO", address))
+```
+```{r}
+pattern <- "BOX[[:blank:]]+([[:digit:]]+)"
+Matches <- 
+  Sample %>% 
+  filter(grepl(pattern, address))
+Dont <-
+  Sample %>%
+  filter( ! grepl(pattern, address))
+Dont
+```
+```{r}
+pattern <- "BOX[[:blank:]]+([[:digit:]]+)"
+BoxNumbers <- 
+  Sample %>%
+  filter(grepl(pattern, address)) %>%
+  extractMatches(pattern, address,boxnum=1) %>%
+  select(boxnum)
+```
+```{r}
+BoxNumbers
+```
+```{r}
+pattern <- "(ST|RD|ROAD)"
+# any of the "ST", "RD", "ROAD" appears
+
+LeftOvers <-
+# call this new data frame LeftOvers
+  Addresses %>% #from data frame Addresses
+  filter( ! grepl(pattern, address),
+          ! grepl("APT|UNIT [[:digit:]]+$", address))
+# For those that fit the pattern. i.e. have ST, ROAD or RD in their names and have APT or UNIT in their names, set them as false. Thus, all left behind after this filter statement are names that dont have RD, ROAD, ST , APT, or UNIT in them.
+```
+
+```{r}
+# pattern (not complete): |WAY|LANE|CIRCLE|AVE|LN|HALL|DRIVE|AVENUE|DR|COURT|HIGHWAY|C|PARKWAY|D|RIDGEWAY|TRL|TR|B|F|CT|LU|NW|ECU|CREEK|PL|
+# after visually examined the output, i decided to add more street endings.
+```
+
+```{r}
+# implement my method described above 1 street endings at a time and count the number of rows
+pattern_LIST <- c("(WAY)", "(BLVD)", "(LANE|LN)", "(CIRCLE)", "(HALL)", "(DRIVE|DR)", "(AVENUE|AVE)", "(COURT|CT)", "(HIGHWAY)", "(C)", "(PARKWAY)", "(D)", "(RIDGEWAY)","(TRL)", "(B)", "(F)", "(LU)", "(NW)", "(ECU)", "(CREEK)", "(PLACE|PL)", "(PATH)", "(TRAIL|TR)", "(WYND)", "(TERRACE|TER)")
+
+print (length(pattern_LIST))
+
+# Counting number of roads that have the street endings listed in pattern_LIST
+to_ret <- c()
+for (p in pattern_LIST){
+  n_row <- LeftOvers %>%
+    filter(grepl(p, address))
+  count <- nrow(n_row)
+  to_ret <- c(to_ret, list(count))
+}
+print (to_ret)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

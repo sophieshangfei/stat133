@@ -1,0 +1,73 @@
+---
+title: "HW7"
+author: "Sophie Shang"
+date: "April 3rd"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+---
+<!-- Don't edit in between this line and the one below -->
+```{r include=FALSE}
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+library(dplyr)
+library(rvest)
+library(lubridate)
+```
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+
+```{r}
+page <- "http://en.wikipedia.org/wiki/List_of_nuclear_reactors"
+xpath <- '//*[@id="mw-content-text"]/table' 
+table_list <- page %>%
+  read_html() %>%
+  html_nodes(xpath = xpath) %>%
+  html_table(fill = TRUE)
+head(table_list)
+length(table_list)
+table_list[[20]]
+table = table_list[[24]]
+names(table)
+```
+
+```{r}
+new_names <- c("Name", "Reactor_NO", "Reactor_Type", "Reactor_Model", "Status", "Net_Capacity", "Gross_Capacity", "Construction_Start", "Operation_Date", "Closure")
+names(table) <- new_names # reset the variable names
+table <- table %>% filter(row_number() != 1) # drop the first row
+dmy(table$Construction_Start)
+```
+```{r}
+plot <- ggplot(table, aes(x = dmy(Construction_Start), y = as.numeric(Net_Capacity))) + geom_point(aes(col = Reactor_Type)) + xlab("construction start")
+plot
+```
+```{r}
+name <- 
+  table %>% tidyr::unite("Reactor_Site", Name, Reactor_NO, remove = FALSE) %>%
+  mutate(a=ifelse(Reactor_NO==1, Name,"")) %>%
+  mutate(Construction_Start=dmy(Construction_Start)) %>%
+  mutate(Operation_Date=dmy(Operation_Date))
+
+plot1<-
+  name%>%
+    ggplot(aes(x=Construction_Start, y=Reactor_Site)) + geom_segment(aes(xend = Operation_Date, yend = Reactor_Site))+scale_y_discrete(labels = name$a)+xlab("construction start") + ylab("Reactor Site")
+plot1
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

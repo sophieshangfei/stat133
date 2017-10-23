@@ -1,0 +1,52 @@
+---
+title: "Lab4"
+author: "Sophie Shang"
+date: "2.8.2017"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+---
+<!-- Don't edit in between this line and the one below -->
+```{r include=FALSE}
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+```
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+<!-- Don't edit the material above this line -->
+
+```{r}
+set.seed(123)
+d <- diamonds[sample(nrow(diamonds), 1000), ]
+head(d)
+```
+
+```{r}
+plot <- ggplot(d, aes(x = carat, y = price, color = cut)) + geom_point(col = "black") + geom_smooth(method = loess, aes(fill = cut)) + facet_wrap(~cut) + 
+  labs(title = "Diamonds", x = "Carat", y = "Price") +
+  theme(plot.title = element_text(size = 20, colour = "#668cff"),  
+        axis.title.x = element_text(size = 10, colour = "#ff8080"),  
+        axis.title.y = element_text(size = 10, colour = "#ff8080"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(colour = "red", size = 5))  
+plot
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

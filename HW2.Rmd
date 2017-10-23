@@ -1,0 +1,81 @@
+---
+title: "hw2"
+author: "Sophie Shang"
+date: "2016.2.4"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+---
+<!-- Don't edit in between this line and the one below -->
+```{r include=FALSE}
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+library(dplyr)
+library(mosaicData)
+library(lubridate)
+```
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+<!-- Don't edit the material above this line -->
+
+```{r}
+data(Births78)
+head(Births78)
+head(Births78$date)
+head(month(Births78$date, label = TRUE))
+myBirths78<-Births78 %>% rename(Wday = wday)
+head(myBirths78)
+avg_Births<-myBirths78 %>%
+  group_by(Month = month(date, label = TRUE), Wday) %>%
+  summarise(avg = mean(births))
+head(avg_Births)
+```
+
+```{r}
+plot1 <- avg_Births %>%
+  ggplot(aes(x= Wday, y= avg)) + geom_point(aes(col = Month))
+plot1
+```
+
+```{r}
+Holidays <- read.csv("http://tiny.cc/dcf/US-Holidays.csv") %>%
+mutate(date = lubridate::dmy(date))
+head(Holidays)
+year_wanted <- "1978"
+holiday_wanted <- c(11, 12)
+myHolidays <- Holidays %>%
+  filter(year %in% year_wanted, month(date) %in% holiday_wanted)
+head(myHolidays)
+```
+```{r}
+plot2 <- avg_Births %>%
+  ggplot(aes(x= Wday, y= avg)) + geom_point(aes(col = Month))
+plot2 <- plot2 + geom_vline(xintercept = wday(myHolidays$date), data = myHolidays)
+plot2
+```                            
+```{r}
+plot3 <- plot2 + geom_text(data = myHolidays, aes(x=wday(myHolidays$date), y=8000, label = holiday), size = 3, angle=65)
+plot3
+```
+```{r}
+avg <- Births78 %>% 
+  summarise(avg=mean(births))
+avg
+plot4 <- plot3 + geom_hline( yintercept = as.numeric(avg))
+plot4
+```
+```{r}
+plot4 + annotate("text", label="avg", x = "Sun", y = 9000)
+```
+
+
+
+
+
+
+
+
+
